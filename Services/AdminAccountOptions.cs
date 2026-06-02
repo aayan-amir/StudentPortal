@@ -2,7 +2,9 @@ namespace StudentPortal.Services;
 
 public class AdminAccountOptions
 {
-    public string Username { get; set; } = "admin";
+    public const string SectionName = "AdminAccount";
 
-    public string Password { get; set; } = "admin123";
+    public string Username { get; set; } = string.Empty;
+
+    public string Password { get; set; } = string.Empty;
 }

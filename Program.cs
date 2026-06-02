@@ -4,16 +4,33 @@ using StudentPortal.Data;
 using StudentPortal.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+var isDevelopment = builder.Environment.IsDevelopment();
+var databaseConnectionString = builder.Configuration.GetConnectionString("SupabasePostgres");
+
+if (!HasUsableValue(databaseConnectionString))
+{
+    throw new InvalidOperationException("Connection string 'ConnectionStrings:SupabasePostgres' is required.");
+}
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.Configure<AdminAccountOptions>(builder.Configuration.GetSection("AdminAccount"));
+builder.Services.AddOptions<AdminAccountOptions>()
+    .Bind(builder.Configuration.GetSection(AdminAccountOptions.SectionName))
+    .Validate(options => HasUsableValue(options.Username), "AdminAccount:Username is required.")
+    .Validate(options => HasUsableValue(options.Password), "AdminAccount:Password is required.")
+    .Validate(options => isDevelopment || options.Password.Length >= 12, "AdminAccount:Password must be at least 12 characters outside Development.")
+    .ValidateOnStart();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    var connectionString = builder.Configuration.GetConnectionString("SupabasePostgres");
-    options.UseNpgsql(connectionString);
+    options.UseNpgsql(databaseConnectionString);
 });
-builder.Services.Configure<CloudinaryOptions>(builder.Configuration.GetSection("Cloudinary"));
+builder.Services.AddOptions<CloudinaryOptions>()
+    .Bind(builder.Configuration.GetSection(CloudinaryOptions.SectionName))
+    .Validate(options => HasUsableValue(options.CloudName), "Cloudinary:CloudName is required.")
+    .Validate(options => HasUsableValue(options.ApiKey), "Cloudinary:ApiKey is required.")
+    .Validate(options => HasUsableValue(options.ApiSecret), "Cloudinary:ApiSecret is required.")
+    .Validate(options => HasUsableValue(options.Folder), "Cloudinary:Folder is required.")
+    .ValidateOnStart();
 builder.Services.AddHttpClient<IFileStorageService, CloudinaryFileStorageService>(client =>
 {
     client.Timeout = TimeSpan.FromSeconds(30);
@@ -22,6 +39,11 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     .AddCookie(options =>
     {
         options.Cookie.Name = "StudentPortal.Admin";
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SameSite = SameSiteMode.Lax;
+        options.Cookie.SecurePolicy = isDevelopment
+            ? CookieSecurePolicy.SameAsRequest
+            : CookieSecurePolicy.Always;
         options.LoginPath = "/Account/Login";
         options.LogoutPath = "/Account/Logout";
         options.AccessDeniedPath = "/Account/Login";
@@ -79,3 +101,9 @@ app.MapControllerRoute(
 
 
 app.Run();
+
+static bool HasUsableValue(string? value)
+{
+    return !string.IsNullOrWhiteSpace(value)
+        && !value.Contains("YOUR-", StringComparison.OrdinalIgnoreCase);
+}

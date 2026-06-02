@@ -2,17 +2,6 @@
 
 @{
     ViewData["Title"] = "Approved Content";
-
-    string GetFileUrl(ContentFile file)
-    {
-        if (!string.Equals(file.MimeType, "application/pdf", StringComparison.OrdinalIgnoreCase))
-        {
-            return file.SecureUrl;
-        }
-
-        var encodedFileName = Uri.EscapeDataString(file.OriginalFileName);
-        return file.SecureUrl.Replace("/raw/upload/", $"/raw/upload/fl_attachment:{encodedFileName}/");
-    }
 }
 
 <section class="portal-header">
@@ -62,7 +51,9 @@ else
                             {
                                 var isPdf = string.Equals(file.MimeType, "application/pdf", StringComparison.OrdinalIgnoreCase);
                                 var isImage = file.MimeType.StartsWith("image/", StringComparison.OrdinalIgnoreCase);
-                                var fileUrl = GetFileUrl(file);
+                                var fileUrl = isPdf
+                                    ? Url.Action("Open", "Files", new { id = file.Id })
+                                    : file.SecureUrl;
 
                                 <div class="attachment-item">
                                     @if (isImage)
@@ -71,13 +62,14 @@ else
                                     }
                                     else if (isPdf)
                                     {
-                                        <object class="pdf-preview" data="@file.SecureUrl" type="application/pdf">
-                                            <p>PDF preview is not available in this browser.</p>
-                                        </object>
+                                        <div class="pdf-file">
+                                            <span class="badge text-bg-light">PDF</span>
+                                            <strong>@file.OriginalFileName</strong>
+                                        </div>
                                     }
 
                                     <a class="file-link" href="@fileUrl" target="_blank" rel="noopener">
-                                        Open @file.OriginalFileName
+                                        @(isPdf ? "Review" : "Open") @file.OriginalFileName
                                     </a>
                                 </div>
                             }

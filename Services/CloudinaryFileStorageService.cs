@@ -41,7 +41,7 @@ public class CloudinaryFileStorageService(
         await stream.CopyToAsync(memoryStream, cancellationToken);
 
         var timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
-        var publicId = BuildPublicId(file.FileName);
+        var publicId = BuildPublicId(file.FileName, file.ContentType);
         var signedParameters = new SortedDictionary<string, string>
         {
             ["folder"] = _options.Folder,
@@ -152,7 +152,7 @@ public class CloudinaryFileStorageService(
         return Convert.ToHexString(SHA1.HashData(Encoding.UTF8.GetBytes(payload + _options.ApiSecret))).ToLowerInvariant();
     }
 
-    private static string BuildPublicId(string fileName)
+    private static string BuildPublicId(string fileName, string contentType)
     {
         var nameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
         var cleaned = new string(nameWithoutExtension
@@ -165,7 +165,11 @@ public class CloudinaryFileStorageService(
             cleaned = "file";
         }
 
-        return $"{cleaned}-{Guid.NewGuid():N}";
+        var extension = string.Equals(contentType, "application/pdf", StringComparison.OrdinalIgnoreCase)
+            ? ".pdf"
+            : string.Empty;
+
+        return $"{cleaned}-{Guid.NewGuid():N}{extension}";
     }
 
     private static string GetCloudinaryErrorMessage(string responseBody, string action)

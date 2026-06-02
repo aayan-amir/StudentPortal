@@ -1,4 +1,6 @@
 using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -35,7 +37,7 @@ public class AccountController(IOptions<AdminAccountOptions> adminAccountOptions
             input.Username.Trim(),
             _adminAccount.Username,
             StringComparison.OrdinalIgnoreCase);
-        var passwordMatches = string.Equals(input.Password, _adminAccount.Password, StringComparison.Ordinal);
+        var passwordMatches = SecureEquals(input.Password, _adminAccount.Password);
 
         if (!usernameMatches || !passwordMatches)
         {
@@ -71,5 +73,13 @@ public class AccountController(IOptions<AdminAccountOptions> adminAccountOptions
         }
 
         return RedirectToAction("Pending", "Admin");
+    }
+
+    private static bool SecureEquals(string value, string expectedValue)
+    {
+        var valueHash = SHA256.HashData(Encoding.UTF8.GetBytes(value));
+        var expectedValueHash = SHA256.HashData(Encoding.UTF8.GetBytes(expectedValue));
+
+        return CryptographicOperations.FixedTimeEquals(valueHash, expectedValueHash);
     }
 }
