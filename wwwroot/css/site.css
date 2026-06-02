@@ -1,5 +1,6 @@
 html {
-  font-size: 14px;
+  font-size: 15px;
+  min-height: 100%;
 }
 
 @media (min-width: 768px) {
@@ -8,24 +9,260 @@ html {
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
 body {
-  margin-bottom: 60px;
+  min-height: 100vh;
+  background: #f6f7f9;
+  color: #1d2630;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+a {
+  color: #166a7a;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+.navbar {
+  background: #ffffff;
+}
+
+.navbar-brand {
+  font-weight: 700;
+}
+
+.container {
+  max-width: 1180px;
+}
+
+.footer {
+  background: #ffffff;
+  line-height: 56px;
+  margin-top: 48px;
+}
+
+.portal-header {
+  align-items: flex-end;
+  display: flex;
+  gap: 24px;
+  justify-content: space-between;
+  margin: 28px 0 24px;
+}
+
+.portal-header h1 {
+  font-size: clamp(2rem, 3vw, 3rem);
+  font-weight: 760;
+  margin: 0;
+}
+
+.eyebrow {
+  color: #687482;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.page-subtitle {
+  color: #596775;
+  margin: 8px 0 0;
+  max-width: 680px;
+}
+
+.room-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+
+.room-card,
+.content-card,
+.moderation-item,
+.empty-state,
+.submit-panel,
+.form-panel,
+.table-panel {
+  background: #ffffff;
+  border: 1px solid #e3e8ee;
+  border-radius: 8px;
+  box-shadow: 0 10px 28px rgba(29, 38, 48, 0.05);
+}
+
+.room-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 220px;
+  padding: 22px;
+  position: relative;
+}
+
+.room-card h2,
+.content-card h3,
+.moderation-item h2,
+.empty-state h2,
+.empty-state h3,
+.submit-panel h2 {
+  font-size: 1.25rem;
+  font-weight: 720;
+}
+
+.room-card p {
+  color: #596775;
+}
+
+.room-subject {
+  color: #166a7a;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.room-meta,
+.content-heading,
+.section-title {
+  align-items: center;
+  color: #687482;
+  display: flex;
+  font-size: 0.9rem;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.portal-layout {
+  align-items: start;
+  display: grid;
+  gap: 24px;
+  grid-template-columns: minmax(0, 1fr) 360px;
+}
+
+.section-title {
+  margin-bottom: 14px;
+}
+
+.section-title h2 {
+  font-size: 1.35rem;
+  font-weight: 740;
+  margin: 0;
+}
+
+.content-list,
+.moderation-list {
+  display: grid;
+  gap: 16px;
+}
+
+.content-card,
+.moderation-item,
+.submit-panel,
+.form-panel,
+.table-panel,
+.empty-state {
+  padding: 22px;
+}
+
+.content-card h3,
+.moderation-item h2 {
+  margin-top: 12px;
+}
+
+.content-card p,
+.moderation-item p {
+  color: #4d5b68;
+}
+
+.content-image {
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+  display: block;
+  margin: 16px 0;
+  object-fit: cover;
+  width: 100%;
+}
+
+.moderation-image {
+  max-height: 360px;
+}
+
+.submitter {
+  color: #687482;
+  font-size: 0.9rem;
+  margin: 16px 0 0;
+}
+
+.submit-panel {
+  position: sticky;
+  top: 18px;
+}
+
+.moderation-item {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: minmax(0, 1fr) 220px;
+}
+
+.approval-actions {
+  display: grid;
+  gap: 12px;
+}
+
+.empty-state {
+  padding: 36px;
+  text-align: center;
+}
+
+.empty-state.compact {
+  padding: 24px;
+}
+
+.table-panel {
+  overflow-x: auto;
+}
+
+.btn {
+  border-radius: 8px;
+  font-weight: 650;
+}
+
+.form-control,
+.form-select {
+  border-radius: 8px;
+}
+
+.dev-url-badge {
+  align-items: center;
+  background: #1d2630;
+  border-radius: 8px;
+  bottom: 16px;
+  box-shadow: 0 10px 28px rgba(29, 38, 48, 0.22);
+  color: #ffffff;
+  display: flex;
+  gap: 10px;
+  left: 16px;
+  padding: 10px 12px;
+  position: fixed;
+  z-index: 1000;
+}
+
+.dev-url-badge span {
+  color: #b8c2cc;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+}
+
+.dev-url-badge strong {
+  font-size: 0.9rem;
+}
+
+@media (max-width: 900px) {
+  .portal-header,
+  .portal-layout,
+  .moderation-item {
+    display: block;
+  }
+
+  .portal-header .btn {
+    margin-top: 16px;
+  }
+
+  .submit-panel,
+  .approval-actions {
+    margin-top: 20px;
+  }
 }

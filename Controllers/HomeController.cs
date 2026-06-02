@@ -8,7 +8,7 @@ namespace StudentPortal.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("Index", "Rooms");
         }
 
         public IActionResult Privacy()

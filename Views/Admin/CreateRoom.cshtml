@@ -1,0 +1,50 @@
+@model StudentPortal.Models.ViewModels.CreateRoomInput
+
+@{
+    ViewData["Title"] = "Create Room";
+}
+
+<section class="portal-header">
+    <div>
+        <p class="eyebrow">Admin</p>
+        <h1>Create room</h1>
+        <p class="page-subtitle">Add a class room where students can share approved content.</p>
+    </div>
+    <a class="btn btn-outline-dark" asp-controller="Admin" asp-action="Rooms">Back to rooms</a>
+</section>
+
+<section class="form-panel">
+    <form asp-controller="Admin" asp-action="CreateRoom" method="post">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="Name" class="form-label">Room name</label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Subject" class="form-label">Subject</label>
+                <input asp-for="Subject" class="form-control" />
+                <span asp-validation-for="Subject" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Section" class="form-label">Section</label>
+                <input asp-for="Section" class="form-control" />
+                <span asp-validation-for="Section" class="text-danger"></span>
+            </div>
+
+            <div class="col-12">
+                <label asp-for="Description" class="form-label">Description</label>
+                <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+        </div>
+
+        <button class="btn btn-primary mt-4" type="submit">Create room</button>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

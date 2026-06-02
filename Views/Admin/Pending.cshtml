@@ -1,0 +1,68 @@
+@model IReadOnlyList<ContentItem>
+
+@{
+    ViewData["Title"] = "Pending Approval";
+}
+
+<section class="portal-header">
+    <div>
+        <p class="eyebrow">Admin</p>
+        <h1>Pending approval</h1>
+        <p class="page-subtitle">Review student submissions before they appear in class rooms.</p>
+    </div>
+    <a class="btn btn-outline-dark" asp-controller="Admin" asp-action="Rooms">Manage rooms</a>
+</section>
+
+@if (TempData["SuccessMessage"] is string message)
+{
+    <div class="alert alert-success">@message</div>
+}
+
+@if (Model.Count == 0)
+{
+    <section class="empty-state">
+        <h2>No pending submissions</h2>
+        <p>New student uploads and notes will arrive here for moderation.</p>
+    </section>
+}
+else
+{
+    <section class="moderation-list">
+        @foreach (var item in Model)
+        {
+            var image = item.Files.FirstOrDefault();
+            <article class="moderation-item">
+                <div>
+                    <div class="content-heading">
+                        <span class="badge text-bg-warning">@item.ContentType</span>
+                        <span>@item.ClassRoom?.Name · @item.SubmittedAt.ToLocalTime().ToString("MMM d, yyyy h:mm tt")</span>
+                    </div>
+                    <h2>@item.Title</h2>
+                    <p>@item.Description</p>
+
+                    @if (item.ContentType == ContentType.Image && image is not null)
+                    {
+                        <img class="content-image moderation-image" src="@image.SecureUrl" alt="@item.Title" />
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(item.ExternalUrl))
+                    {
+                        <a href="@item.ExternalUrl" target="_blank" rel="noopener">Open submitted link</a>
+                    }
+
+                    <p class="submitter">Submitted by @item.SubmittedByName</p>
+                </div>
+
+                <div class="approval-actions">
+                    <form asp-controller="Admin" asp-action="Approve" asp-route-id="@item.Id" method="post">
+                        <button class="btn btn-success w-100" type="submit">Approve</button>
+                    </form>
+                    <form asp-controller="Admin" asp-action="Reject" asp-route-id="@item.Id" method="post">
+                        <textarea name="adminNote" class="form-control" rows="2" placeholder="Reason"></textarea>
+                        <button class="btn btn-outline-danger w-100 mt-2" type="submit">Reject</button>
+                    </form>
+                </div>
+            </article>
+        }
+    </section>
+}

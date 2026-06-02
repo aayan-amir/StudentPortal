@@ -1,0 +1,50 @@
+@model IReadOnlyList<ClassRoom>
+
+@{
+    ViewData["Title"] = "Class Rooms";
+}
+
+<section class="portal-header">
+    <div>
+        <p class="eyebrow">Student Content Portal</p>
+        <h1>Class rooms</h1>
+        <p class="page-subtitle">Open a room to view approved notes, images, links, and important updates.</p>
+    </div>
+    <a class="btn btn-dark" asp-controller="Admin" asp-action="CreateRoom">Create room</a>
+</section>
+
+@if (TempData["SuccessMessage"] is string message)
+{
+    <div class="alert alert-success">@message</div>
+}
+
+@if (Model.Count == 0)
+{
+    <section class="empty-state">
+        <h2>No class rooms yet</h2>
+        <p>Create the first room from the admin area, then students can start submitting content.</p>
+        <a class="btn btn-primary" asp-controller="Admin" asp-action="CreateRoom">Create first room</a>
+    </section>
+}
+else
+{
+    <section class="room-grid">
+        @foreach (var room in Model)
+        {
+            <article class="room-card">
+                <div>
+                    <p class="room-subject">@room.Subject</p>
+                    <h2>@room.Name</h2>
+                    <p>@room.Description</p>
+                </div>
+                <div class="room-meta">
+                    <span>@room.Section</span>
+                    <span>@room.ContentItems.Count approved items</span>
+                </div>
+                <a class="stretched-link" asp-controller="Rooms" asp-action="Details" asp-route-id="@room.Id">
+                    Open room
+                </a>
+            </article>
+        }
+    </section>
+}

@@ -1,0 +1,114 @@
+@model StudentPortal.Models.ViewModels.RoomDetailsViewModel
+
+@{
+    ViewData["Title"] = Model.Room.Name;
+}
+
+<section class="portal-header">
+    <div>
+        <p class="eyebrow">@Model.Room.Subject - @Model.Room.Section</p>
+        <h1>@Model.Room.Name</h1>
+        <p class="page-subtitle">@Model.Room.Description</p>
+    </div>
+    <a class="btn btn-outline-dark" asp-controller="Rooms" asp-action="Index">All rooms</a>
+</section>
+
+@if (TempData["SuccessMessage"] is string message)
+{
+    <div class="alert alert-success">@message</div>
+}
+
+<div class="portal-layout">
+    <section>
+        <div class="section-title">
+            <h2>Approved content</h2>
+            <span>@Model.ApprovedContent.Count items</span>
+        </div>
+
+        @if (Model.ApprovedContent.Count == 0)
+        {
+            <div class="empty-state compact">
+                <h3>No approved content yet</h3>
+                <p>Submissions appear here after admin approval.</p>
+            </div>
+        }
+        else
+        {
+            <div class="content-list">
+                @foreach (var item in Model.ApprovedContent)
+                {
+                    var image = item.Files.FirstOrDefault();
+                    <article class="content-card">
+                        <div class="content-heading">
+                            <span class="badge text-bg-light">@item.ContentType</span>
+                            <span>@item.SubmittedAt.ToLocalTime().ToString("MMM d, yyyy")</span>
+                        </div>
+                        <h3>@item.Title</h3>
+                        <p>@item.Description</p>
+
+                        @if (item.ContentType == ContentType.Image && image is not null)
+                        {
+                            <img class="content-image" src="@image.SecureUrl" alt="@item.Title" />
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(item.ExternalUrl))
+                        {
+                            <a href="@item.ExternalUrl" target="_blank" rel="noopener">Open link</a>
+                        }
+
+                        <p class="submitter">Shared by @item.SubmittedByName</p>
+                    </article>
+                }
+            </div>
+        }
+    </section>
+
+    <aside class="submit-panel">
+        <h2>Submit content</h2>
+        <form asp-controller="Rooms" asp-action="Submit" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+            <input asp-for="Submission.ClassRoomId" type="hidden" />
+
+            <div class="mb-3">
+                <label asp-for="Submission.SubmittedByName" class="form-label">Your name</label>
+                <input asp-for="Submission.SubmittedByName" class="form-control" />
+                <span asp-validation-for="Submission.SubmittedByName" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Submission.Title" class="form-label">Title</label>
+                <input asp-for="Submission.Title" class="form-control" />
+                <span asp-validation-for="Submission.Title" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Submission.ContentType" class="form-label">Type</label>
+                <select asp-for="Submission.ContentType" asp-items="Html.GetEnumSelectList<ContentType>()" class="form-select"></select>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Submission.Description" class="form-label">Description</label>
+                <textarea asp-for="Submission.Description" class="form-control" rows="4"></textarea>
+                <span asp-validation-for="Submission.Description" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Submission.ExternalUrl" class="form-label">Link</label>
+                <input asp-for="Submission.ExternalUrl" class="form-control" placeholder="Optional" />
+                <span asp-validation-for="Submission.ExternalUrl" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Submission.Image" class="form-label">Image upload</label>
+                <input asp-for="Submission.Image" class="form-control" accept="image/jpeg,image/png,image/webp,image/gif" />
+                <span asp-validation-for="Submission.Image" class="text-danger"></span>
+            </div>
+
+            <button class="btn btn-primary w-100" type="submit">Submit for approval</button>
+        </form>
+    </aside>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
