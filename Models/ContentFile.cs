@@ -10,6 +10,8 @@ public class ContentFile
 
     public string Provider { get; set; } = string.Empty;
 
+    public string ResourceType { get; set; } = "image";
+
     public string PublicId { get; set; } = string.Empty;
 
     public string Url { get; set; } = string.Empty;

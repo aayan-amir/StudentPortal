@@ -25,5 +25,5 @@ public class ContentSubmissionInput
     [StringLength(600)]
     public string? ExternalUrl { get; set; }
 
-    public IFormFile? Image { get; set; }
+    public IFormFile? UploadedFile { get; set; }
 }

@@ -8,10 +8,6 @@ public class ContentItem
 
     public ClassRoom? ClassRoom { get; set; }
 
-    public int? SubmittedById { get; set; }
-
-    public AppUser? SubmittedBy { get; set; }
-
     public string SubmittedByName { get; set; } = string.Empty;
 
     public string Title { get; set; } = string.Empty;
@@ -29,6 +25,4 @@ public class ContentItem
     public DateTime? ReviewedAt { get; set; }
 
     public ICollection<ContentFile> Files { get; set; } = [];
-
-    public ICollection<ContentReview> Reviews { get; set; } = [];
 }

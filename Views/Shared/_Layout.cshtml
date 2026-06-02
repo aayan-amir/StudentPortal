@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+@{
+    var isAdmin = User.Identity?.IsAuthenticated == true;
+    var shellClass = ViewData["ShellClass"] as string ?? string.Empty;
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -9,42 +14,51 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/StudentPortal.styles.css" asp-append-version="true" />
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Rooms" asp-action="Index">Student Portal</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Rooms" asp-action="Index">Rooms</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Pending">Pending Approval</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Rooms">Manage Rooms</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - Student Portal
+<body class="@shellClass">
+    <header class="app-topbar">
+        <div class="app-brand">
+            <a asp-controller="Rooms" asp-action="Index">
+                <span>
+                    <strong>StudentPortal</strong>
+                    <small>Content approval system</small>
+                </span>
+            </a>
         </div>
+
+        <nav class="app-nav" aria-label="Main navigation">
+            <a asp-controller="Rooms" asp-action="Index">Rooms</a>
+            @if (isAdmin)
+            {
+                <a asp-controller="Admin" asp-action="Pending">Pending</a>
+                <a asp-controller="Admin" asp-action="Approved">Approved</a>
+                <a asp-controller="Admin" asp-action="Rooms">Manage</a>
+            }
+        </nav>
+
+        <div class="app-actions">
+            @if (isAdmin)
+            {
+                <span class="admin-chip">@User.Identity?.Name</span>
+                <form asp-controller="Account" asp-action="Logout" method="post">
+                    <button class="btn btn-outline-light btn-sm" type="submit">Logout</button>
+                </form>
+            }
+            else
+            {
+                <a class="btn btn-light btn-sm" asp-controller="Account" asp-action="Login">Admin Login</a>
+            }
+        </div>
+    </header>
+
+    <main class="app-main" role="main">
+        @RenderBody()
+    </main>
+
+    <footer class="app-footer">
+        <span>&copy; 2026 Student Portal</span>
+        <span>Class rooms, uploads, approvals</span>
     </footer>
+
     @if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
     {
         <div class="dev-url-badge">
@@ -52,6 +66,7 @@
             <strong>@Context.Request.Scheme://@Context.Request.Host</strong>
         </div>
     }
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

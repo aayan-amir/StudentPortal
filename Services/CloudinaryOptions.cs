@@ -8,7 +8,5 @@ public class CloudinaryOptions
 
     public string ApiSecret { get; set; } = string.Empty;
 
-    public string UploadPreset { get; set; } = "student_portal_unsigned";
-
     public string Folder { get; set; } = "student-portal";
 }

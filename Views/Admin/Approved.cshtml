@@ -1,7 +1,7 @@
 @model IReadOnlyList<ContentItem>
 
 @{
-    ViewData["Title"] = "Pending Approval";
+    ViewData["Title"] = "Approved Content";
 
     string GetFileUrl(ContentFile file)
     {
@@ -18,10 +18,10 @@
 <section class="portal-header">
     <div>
         <p class="eyebrow">Admin</p>
-        <h1>Review queue</h1>
-        <p class="page-subtitle">Approve material for room visibility or reject it and remove its uploaded file.</p>
+        <h1>Approved content</h1>
+        <p class="page-subtitle">Remove published material from a room and delete its stored Cloudinary files.</p>
     </div>
-    <a class="btn btn-outline-dark" asp-controller="Admin" asp-action="Rooms">Manage rooms</a>
+    <a class="btn btn-outline-dark" asp-controller="Admin" asp-action="Pending">Review queue</a>
 </section>
 
 @if (TempData["SuccessMessage"] is string message)
@@ -37,8 +37,8 @@
 @if (Model.Count == 0)
 {
     <section class="empty-state">
-        <h2>No pending submissions</h2>
-        <p>Student submissions waiting for approval will appear here.</p>
+        <h2>No approved content</h2>
+        <p>Approved submissions will appear here for admin cleanup.</p>
     </section>
 }
 else
@@ -49,7 +49,7 @@ else
             <article class="moderation-item">
                 <div>
                     <div class="content-heading">
-                        <span class="badge text-bg-warning">@item.ContentType</span>
+                        <span class="badge text-bg-light">@item.ContentType</span>
                         <span>@item.ClassRoom?.Name - @item.SubmittedAt.ToLocalTime().ToString("MMM d, yyyy h:mm tt")</span>
                     </div>
                     <h2>@item.Title</h2>
@@ -86,19 +86,15 @@ else
 
                     @if (!string.IsNullOrWhiteSpace(item.ExternalUrl))
                     {
-                        <a href="@item.ExternalUrl" target="_blank" rel="noopener">Open submitted link</a>
+                        <a href="@item.ExternalUrl" target="_blank" rel="noopener">Open link</a>
                     }
 
                     <p class="submitter">Submitted by @item.SubmittedByName</p>
                 </div>
 
                 <div class="approval-actions">
-                    <form asp-controller="Admin" asp-action="Approve" asp-route-id="@item.Id" method="post">
-                        <button class="btn btn-success w-100" type="submit">Approve</button>
-                    </form>
-                    <form asp-controller="Admin" asp-action="Reject" asp-route-id="@item.Id" method="post">
-                        <textarea name="adminNote" class="form-control" rows="2" placeholder="Reason"></textarea>
-                        <button class="btn btn-outline-danger w-100 mt-2" type="submit">Reject and delete file</button>
+                    <form asp-controller="Admin" asp-action="DeleteApproved" asp-route-id="@item.Id" method="post">
+                        <button class="btn btn-outline-danger w-100" type="submit">Delete approved item</button>
                     </form>
                 </div>
             </article>

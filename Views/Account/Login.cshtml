@@ -1,0 +1,35 @@
+@model StudentPortal.Models.ViewModels.LoginInput
+
+@{
+    ViewData["Title"] = "Admin Login";
+    ViewData["ShellClass"] = "auth-shell";
+}
+
+<section class="auth-card">
+    <div class="auth-intro">
+        <p class="eyebrow">Admin access</p>
+        <h1>Admin sign in</h1>
+        <p>Use the project admin account to review submissions and manage class rooms.</p>
+    </div>
+
+    <form asp-controller="Account" asp-action="Login" method="post" class="auth-form">
+        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+        <input asp-for="ReturnUrl" type="hidden" />
+
+        <div class="mb-3">
+            <label asp-for="Username" class="form-label">Username</label>
+            <input asp-for="Username" class="form-control" autocomplete="username" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Password" class="form-label">Password</label>
+            <input asp-for="Password" class="form-control" autocomplete="current-password" />
+        </div>
+
+        <button class="btn btn-primary w-100" type="submit">Sign in</button>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

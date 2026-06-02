@@ -14,7 +14,5 @@ public class ClassRoom
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-    public ICollection<ClassMembership> Members { get; set; } = [];
-
     public ICollection<ContentItem> ContentItems { get; set; } = [];
 }

@@ -5,5 +5,6 @@ public enum ContentType
     Note = 0,
     Image = 1,
     Important = 2,
-    Link = 3
+    Link = 3,
+    Pdf = 4
 }

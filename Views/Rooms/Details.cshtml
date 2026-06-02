@@ -2,6 +2,17 @@
 
 @{
     ViewData["Title"] = Model.Room.Name;
+
+    string GetFileUrl(ContentFile file)
+    {
+        if (!string.Equals(file.MimeType, "application/pdf", StringComparison.OrdinalIgnoreCase))
+        {
+            return file.SecureUrl;
+        }
+
+        var encodedFileName = Uri.EscapeDataString(file.OriginalFileName);
+        return file.SecureUrl.Replace("/raw/upload/", $"/raw/upload/fl_attachment:{encodedFileName}/");
+    }
 }
 
 <section class="portal-header">
@@ -37,7 +48,6 @@
             <div class="content-list">
                 @foreach (var item in Model.ApprovedContent)
                 {
-                    var image = item.Files.FirstOrDefault();
                     <article class="content-card">
                         <div class="content-heading">
                             <span class="badge text-bg-light">@item.ContentType</span>
@@ -46,9 +56,33 @@
                         <h3>@item.Title</h3>
                         <p>@item.Description</p>
 
-                        @if (item.ContentType == ContentType.Image && image is not null)
+                        @if (item.Files.Count > 0)
                         {
-                            <img class="content-image" src="@image.SecureUrl" alt="@item.Title" />
+                            <div class="attachment-list">
+                                @foreach (var file in item.Files)
+                                {
+                                    var isPdf = string.Equals(file.MimeType, "application/pdf", StringComparison.OrdinalIgnoreCase);
+                                    var isImage = file.MimeType.StartsWith("image/", StringComparison.OrdinalIgnoreCase);
+                                    var fileUrl = GetFileUrl(file);
+
+                                    <div class="attachment-item">
+                                        @if (isImage)
+                                        {
+                                            <img class="content-image" src="@fileUrl" alt="@file.OriginalFileName" />
+                                        }
+                                        else if (isPdf)
+                                        {
+                                            <object class="pdf-preview" data="@file.SecureUrl" type="application/pdf">
+                                                <p>PDF preview is not available in this browser.</p>
+                                            </object>
+                                        }
+
+                                        <a class="file-link" href="@fileUrl" target="_blank" rel="noopener">
+                                            Open @file.OriginalFileName
+                                        </a>
+                                    </div>
+                                }
+                            </div>
                         }
 
                         @if (!string.IsNullOrWhiteSpace(item.ExternalUrl))
@@ -64,7 +98,7 @@
     </section>
 
     <aside class="submit-panel">
-        <h2>Submit content</h2>
+        <h2>New submission</h2>
         <form asp-controller="Rooms" asp-action="Submit" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="All" class="text-danger mb-3"></div>
             <input asp-for="Submission.ClassRoomId" type="hidden" />
@@ -99,12 +133,12 @@
             </div>
 
             <div class="mb-3">
-                <label asp-for="Submission.Image" class="form-label">Image upload</label>
-                <input asp-for="Submission.Image" class="form-control" accept="image/jpeg,image/png,image/webp,image/gif" />
-                <span asp-validation-for="Submission.Image" class="text-danger"></span>
+                <label asp-for="Submission.UploadedFile" class="form-label">File upload</label>
+                <input asp-for="Submission.UploadedFile" class="form-control" accept="image/jpeg,image/png,image/webp,image/gif,application/pdf" />
+                <span asp-validation-for="Submission.UploadedFile" class="text-danger"></span>
             </div>
 
-            <button class="btn btn-primary w-100" type="submit">Submit for approval</button>
+            <button class="btn btn-primary w-100" type="submit">Submit for review</button>
         </form>
     </aside>
 </div>

@@ -1,7 +1,8 @@
 namespace StudentPortal.Services;
 
-public record ImageUploadResult(
+public record FileUploadResult(
     string Provider,
+    string ResourceType,
     string PublicId,
     string Url,
     string SecureUrl,

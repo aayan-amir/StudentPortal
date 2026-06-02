@@ -1,12 +1,17 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StudentPortal.Data;
 using StudentPortal.Models;
 using StudentPortal.Models.ViewModels;
+using StudentPortal.Services;
 
 namespace StudentPortal.Controllers;
 
-public class AdminController(ApplicationDbContext dbContext) : Controller
+[Authorize(Roles = "Admin")]
+public class AdminController(
+    ApplicationDbContext dbContext,
+    IFileStorageService fileStorageService) : Controller
 {
     public async Task<IActionResult> Pending()
     {
@@ -18,6 +23,18 @@ public class AdminController(ApplicationDbContext dbContext) : Controller
             .ToListAsync();
 
         return View(pendingItems);
+    }
+
+    public async Task<IActionResult> Approved()
+    {
+        var approvedItems = await dbContext.ContentItems
+            .Include(item => item.ClassRoom)
+            .Include(item => item.Files)
+            .Where(item => item.Status == ContentStatus.Approved)
+            .OrderByDescending(item => item.SubmittedAt)
+            .ToListAsync();
+
+        return View(approvedItems);
     }
 
     public async Task<IActionResult> Rooms()
@@ -69,12 +86,6 @@ public class AdminController(ApplicationDbContext dbContext) : Controller
 
         item.Status = ContentStatus.Approved;
         item.ReviewedAt = DateTime.UtcNow;
-        item.Reviews.Add(new ContentReview
-        {
-            Decision = ContentStatus.Approved,
-            ReviewedByName = "Admin",
-            AdminNote = "Approved for class room sharing."
-        });
 
         await dbContext.SaveChangesAsync();
         TempData["SuccessMessage"] = "Content approved.";
@@ -85,23 +96,71 @@ public class AdminController(ApplicationDbContext dbContext) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Reject(int id, string? adminNote)
     {
-        var item = await dbContext.ContentItems.FirstOrDefaultAsync(item => item.Id == id);
+        var item = await dbContext.ContentItems
+            .Include(item => item.Files)
+            .FirstOrDefaultAsync(item => item.Id == id);
         if (item is null)
         {
             return NotFound();
         }
 
+        if (!await DeleteStoredFilesAsync(item))
+        {
+            return RedirectToAction(nameof(Pending));
+        }
+
         item.Status = ContentStatus.Rejected;
         item.ReviewedAt = DateTime.UtcNow;
-        item.Reviews.Add(new ContentReview
-        {
-            Decision = ContentStatus.Rejected,
-            ReviewedByName = "Admin",
-            AdminNote = string.IsNullOrWhiteSpace(adminNote) ? "Rejected by admin." : adminNote.Trim()
-        });
 
         await dbContext.SaveChangesAsync();
         TempData["SuccessMessage"] = "Content rejected.";
         return RedirectToAction(nameof(Pending));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteApproved(int id)
+    {
+        var item = await dbContext.ContentItems
+            .Include(item => item.Files)
+            .FirstOrDefaultAsync(item => item.Id == id && item.Status == ContentStatus.Approved);
+        if (item is null)
+        {
+            return NotFound();
+        }
+
+        if (!await DeleteStoredFilesAsync(item))
+        {
+            return RedirectToAction(nameof(Approved));
+        }
+
+        dbContext.ContentItems.Remove(item);
+        await dbContext.SaveChangesAsync();
+
+        TempData["SuccessMessage"] = "Approved content deleted.";
+        return RedirectToAction(nameof(Approved));
+    }
+
+    private async Task<bool> DeleteStoredFilesAsync(ContentItem item)
+    {
+        foreach (var file in item.Files.ToList())
+        {
+            try
+            {
+                await fileStorageService.DeleteFileAsync(file.PublicId, file.ResourceType);
+            }
+            catch (Exception ex) when (ex is InvalidOperationException or HttpRequestException or TaskCanceledException)
+            {
+                TempData["ErrorMessage"] = ex is TaskCanceledException
+                    ? "Cloudinary delete timed out. Try again."
+                    : ex.Message;
+
+                return false;
+            }
+
+            dbContext.ContentFiles.Remove(file);
+        }
+
+        return true;
     }
 }

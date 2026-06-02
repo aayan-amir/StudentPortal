@@ -6,11 +6,14 @@
 
 <section class="portal-header">
     <div>
-        <p class="eyebrow">Student Content Portal</p>
+        <p class="eyebrow">Rooms</p>
         <h1>Class rooms</h1>
-        <p class="page-subtitle">Open a room to view approved notes, images, links, and important updates.</p>
+        <p class="page-subtitle">Approved class material is grouped by room. Students can submit notes, images, PDFs, and links for review.</p>
     </div>
-    <a class="btn btn-dark" asp-controller="Admin" asp-action="CreateRoom">Create room</a>
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <a class="btn btn-primary" asp-controller="Admin" asp-action="CreateRoom">Create room</a>
+    }
 </section>
 
 @if (TempData["SuccessMessage"] is string message)
@@ -22,7 +25,7 @@
 {
     <section class="empty-state">
         <h2>No class rooms yet</h2>
-        <p>Create the first room from the admin area, then students can start submitting content.</p>
+        <p>An admin needs to create a room before students can submit material.</p>
         <a class="btn btn-primary" asp-controller="Admin" asp-action="CreateRoom">Create first room</a>
     </section>
 }

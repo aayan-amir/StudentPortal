@@ -9,9 +9,9 @@ namespace StudentPortal.Controllers;
 
 public class RoomsController(
     ApplicationDbContext dbContext,
-    IImageStorageService imageStorageService) : Controller
+    IFileStorageService fileStorageService) : Controller
 {
-    private const string ImageFieldName = "Submission.Image";
+    private const string UploadedFileFieldName = "Submission.UploadedFile";
 
     public async Task<IActionResult> Index()
     {
@@ -56,9 +56,24 @@ public class RoomsController(
             return NotFound();
         }
 
-        if (input.ContentType == ContentType.Image && input.Image is null)
+        var requiresUpload = input.ContentType is ContentType.Image or ContentType.Pdf;
+
+        if (requiresUpload && input.UploadedFile is null)
         {
-            ModelState.AddModelError(ImageFieldName, "Choose an image to upload.");
+            ModelState.AddModelError(UploadedFileFieldName, "Choose a file to upload.");
+        }
+
+        if (input.UploadedFile is not null)
+        {
+            if (input.ContentType == ContentType.Image && input.UploadedFile.ContentType == "application/pdf")
+            {
+                ModelState.AddModelError(UploadedFileFieldName, "Choose an image file for image submissions.");
+            }
+
+            if (input.ContentType == ContentType.Pdf && input.UploadedFile.ContentType != "application/pdf")
+            {
+                ModelState.AddModelError(UploadedFileFieldName, "Choose a PDF file for PDF submissions.");
+            }
         }
 
         if (!ModelState.IsValid)
@@ -77,18 +92,18 @@ public class RoomsController(
             Status = ContentStatus.Pending
         };
 
-        if (input.ContentType == ContentType.Image && input.Image is not null)
+        if (requiresUpload && input.UploadedFile is not null)
         {
-            ImageUploadResult uploadedImage;
+            FileUploadResult uploadedFile;
 
             try
             {
-                uploadedImage = await imageStorageService.UploadImageAsync(input.Image, cancellationToken);
+                uploadedFile = await fileStorageService.UploadFileAsync(input.UploadedFile, cancellationToken);
             }
             catch (Exception ex) when (ex is InvalidOperationException or HttpRequestException or TaskCanceledException)
             {
-                ModelState.AddModelError(ImageFieldName, ex is TaskCanceledException
-                    ? "Image upload timed out. Try a smaller image or submit again."
+                ModelState.AddModelError(UploadedFileFieldName, ex is TaskCanceledException
+                    ? "File upload timed out. Try a smaller file or submit again."
                     : ex.Message);
 
                 return await DetailsViewWithSubmissionAsync(room, input, cancellationToken);
@@ -96,13 +111,14 @@ public class RoomsController(
 
             item.Files.Add(new ContentFile
             {
-                Provider = uploadedImage.Provider,
-                PublicId = uploadedImage.PublicId,
-                Url = uploadedImage.Url,
-                SecureUrl = uploadedImage.SecureUrl,
-                OriginalFileName = uploadedImage.OriginalFileName,
-                MimeType = uploadedImage.MimeType,
-                FileSize = uploadedImage.FileSize
+                Provider = uploadedFile.Provider,
+                ResourceType = uploadedFile.ResourceType,
+                PublicId = uploadedFile.PublicId,
+                Url = uploadedFile.Url,
+                SecureUrl = uploadedFile.SecureUrl,
+                OriginalFileName = uploadedFile.OriginalFileName,
+                MimeType = uploadedFile.MimeType,
+                FileSize = uploadedFile.FileSize
             });
         }
 
