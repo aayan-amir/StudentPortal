@@ -389,6 +389,17 @@ a {
   gap: 10px;
 }
 
+.room-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.room-actions form {
+  margin: 0;
+}
+
 .empty-state {
   padding: 34px;
   text-align: center;

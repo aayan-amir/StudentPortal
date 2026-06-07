@@ -94,7 +94,7 @@ public class AdminController(
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Reject(int id, string? adminNote)
+    public async Task<IActionResult> Reject(int id)
     {
         var item = await dbContext.ContentItems
             .Include(item => item.Files)
@@ -115,6 +115,34 @@ public class AdminController(
         await dbContext.SaveChangesAsync();
         TempData["SuccessMessage"] = "Content rejected.";
         return RedirectToAction(nameof(Pending));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteRoom(int id)
+    {
+        var room = await dbContext.ClassRooms
+            .Include(room => room.ContentItems)
+                .ThenInclude(item => item.Files)
+            .FirstOrDefaultAsync(room => room.Id == id);
+        if (room is null)
+        {
+            return NotFound();
+        }
+
+        foreach (var item in room.ContentItems)
+        {
+            if (!await DeleteStoredFilesAsync(item))
+            {
+                return RedirectToAction(nameof(Rooms));
+            }
+        }
+
+        dbContext.ClassRooms.Remove(room);
+        await dbContext.SaveChangesAsync();
+
+        TempData["SuccessMessage"] = "Room and all related submissions were deleted.";
+        return RedirectToAction(nameof(Rooms));
     }
 
     [HttpPost]
