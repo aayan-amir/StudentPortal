@@ -23,6 +23,7 @@
 html {
   font-size: 15px;
   min-height: 100%;
+  -webkit-text-size-adjust: 100%;
 }
 
 @media (min-width: 768px) {
@@ -39,6 +40,7 @@ body {
   background-size: 26px 26px;
   color: var(--text);
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 a {
@@ -88,6 +90,7 @@ a:hover {
   font-weight: 700;
   letter-spacing: 0;
   padding-bottom: 10px;
+  overflow-wrap: anywhere;
 }
 
 .app-brand small {
@@ -109,8 +112,10 @@ a:hover {
   color: var(--rail-ink);
   display: block;
   font-weight: 750;
+  min-height: 42px;
   padding: 10px 12px;
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .app-nav a:hover {
@@ -176,6 +181,10 @@ a:hover {
   padding: 22px;
 }
 
+.portal-header > * {
+  min-width: 0;
+}
+
 .portal-header h1 {
   color: var(--page-ink);
   font-family: Georgia, "Times New Roman", serif;
@@ -183,6 +192,7 @@ a:hover {
   font-weight: 700;
   letter-spacing: 0;
   margin: 0;
+  overflow-wrap: anywhere;
 }
 
 .eyebrow {
@@ -198,6 +208,7 @@ a:hover {
   color: var(--muted);
   margin: 8px 0 0;
   max-width: 760px;
+  overflow-wrap: anywhere;
 }
 
 .room-grid {
@@ -258,6 +269,7 @@ a:hover {
   font-family: Georgia, "Times New Roman", serif;
   font-size: 1.28rem;
   margin: 0 0 8px;
+  overflow-wrap: anywhere;
 }
 
 .room-card p,
@@ -265,6 +277,7 @@ a:hover {
 .moderation-item p,
 .auth-card p {
   color: var(--muted);
+  overflow-wrap: anywhere;
 }
 
 .room-subject {
@@ -285,6 +298,7 @@ a:hover {
   font-size: 0.9rem;
   gap: 10px;
   justify-content: space-between;
+  min-width: 0;
 }
 
 .room-meta span {
@@ -292,6 +306,7 @@ a:hover {
   border: 1px solid var(--border);
   color: #3c473f;
   padding: 5px 8px;
+  overflow-wrap: anywhere;
 }
 
 .portal-layout {
@@ -338,6 +353,7 @@ a:hover {
 .moderation-item h2 {
   font-size: 1.17rem;
   margin-top: 10px;
+  overflow-wrap: anywhere;
 }
 
 .badge {
@@ -402,9 +418,12 @@ a:hover {
   color: var(--primary);
   display: inline-flex;
   font-weight: 800;
+  justify-content: center;
   margin: 10px 0;
+  min-height: 42px;
   padding: 8px 11px;
   text-decoration: none;
+  text-align: center;
 }
 
 .file-link:hover {
@@ -458,6 +477,10 @@ a:hover {
   padding: 10px;
 }
 
+.approval-actions form {
+  margin: 0;
+}
+
 .room-actions {
   align-items: center;
   display: flex;
@@ -483,6 +506,7 @@ a:hover {
 .table-panel {
   overflow-x: auto;
   padding: 0;
+  -webkit-overflow-scrolling: touch;
 }
 
 .table {
@@ -512,6 +536,7 @@ a:hover {
 .btn {
   border-radius: 0;
   font-weight: 800;
+  min-height: 42px;
 }
 
 .btn-primary,
@@ -580,7 +605,8 @@ a:hover {
   background-color: #fffef9;
   border-color: #aaa28f;
   border-radius: 0;
-  min-height: 42px;
+  font-size: 1rem;
+  min-height: 44px;
 }
 
 .form-control:focus,
@@ -652,6 +678,10 @@ a:hover {
     position: static;
   }
 
+  .app-rail {
+    gap: 14px;
+  }
+
   .app-brand a {
     padding-bottom: 10px;
   }
@@ -666,6 +696,11 @@ a:hover {
     gap: 8px;
   }
 
+  .app-nav a {
+    flex: 1 1 150px;
+    text-align: center;
+  }
+
   .app-actions {
     align-items: center;
     display: flex;
@@ -677,10 +712,14 @@ a:hover {
     padding: 22px 16px 36px;
   }
 
-  .portal-header,
   .portal-layout,
   .moderation-item {
     display: block;
+  }
+
+  .portal-header {
+    align-items: stretch;
+    display: grid;
   }
 
   .portal-header .btn,
@@ -694,15 +733,234 @@ a:hover {
   }
 
   .app-footer {
-    display: block;
+    align-items: flex-start;
+    display: grid;
+    gap: 6px;
     padding-left: 16px;
     padding-right: 16px;
   }
 }
 
+@media (max-width: 720px) {
+  body {
+    background-size: 20px 20px;
+  }
+
+  .app-rail {
+    padding: 14px 12px;
+  }
+
+  .app-brand strong {
+    border-bottom-width: 1px;
+    font-size: 1.18rem;
+    padding-bottom: 7px;
+  }
+
+  .app-brand small {
+    font-size: 0.72rem;
+    margin-top: 7px;
+  }
+
+  .app-nav {
+    flex-wrap: nowrap;
+    margin: 0 -12px;
+    overflow-x: auto;
+    padding: 0 12px 6px;
+    scrollbar-width: thin;
+  }
+
+  .app-nav a {
+    flex: 0 0 auto;
+    font-size: 0.9rem;
+    min-width: max-content;
+    padding: 9px 11px;
+  }
+
+  .app-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .app-actions .btn,
+  .app-actions form,
+  .app-actions form .btn {
+    width: 100%;
+  }
+
+  .app-main {
+    padding: 16px 12px 30px;
+  }
+
+  .portal-header {
+    border-left-width: 6px;
+    gap: 14px;
+    margin-bottom: 16px;
+    padding: 16px;
+  }
+
+  .portal-header .btn {
+    width: 100%;
+  }
+
+  .portal-header h1 {
+    font-size: 1.75rem;
+    line-height: 1.12;
+  }
+
+  .eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+  }
+
+  .page-subtitle {
+    font-size: 0.95rem;
+  }
+
+  .room-grid {
+    gap: 12px;
+  }
+
+  .room-card {
+    min-height: 0;
+    padding: 16px;
+  }
+
+  .room-meta,
+  .content-heading,
+  .section-title {
+    align-items: stretch;
+    display: grid;
+    gap: 8px;
+  }
+
+  .room-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .content-heading {
+    font-size: 0.84rem;
+  }
+
+  .content-heading .badge {
+    justify-self: start;
+  }
+
+  .section-title {
+    padding: 11px 12px;
+  }
+
+  .attachment-item {
+    padding: 9px;
+  }
+
+  .attachment-actions,
+  .room-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .attachment-actions .file-link,
+  .attachment-item > .file-link,
+  .room-actions .btn,
+  .room-actions form,
+  .room-actions form .btn {
+    width: 100%;
+  }
+
+  .pdf-file {
+    align-items: flex-start;
+    display: grid;
+    gap: 8px;
+  }
+
+  .moderation-image {
+    max-height: none;
+  }
+
+  .approval-actions {
+    border-width: 2px;
+  }
+
+  .table-panel {
+    background: transparent;
+    border: 0;
+    overflow: visible;
+  }
+
+  .table-panel table,
+  .table-panel thead,
+  .table-panel tbody,
+  .table-panel tr,
+  .table-panel th,
+  .table-panel td {
+    display: block;
+  }
+
+  .table-panel thead {
+    display: none;
+  }
+
+  .table-panel .table {
+    border-collapse: separate;
+    border-spacing: 0 12px;
+  }
+
+  .table-panel tbody tr {
+    background: var(--surface);
+    border: 2px solid var(--border);
+    display: grid;
+    gap: 0;
+    padding: 10px 12px;
+  }
+
+  .table-panel tbody tr:nth-child(even) {
+    background: var(--surface);
+  }
+
+  .table-panel td {
+    border: 0;
+    display: grid;
+    gap: 4px;
+    padding: 8px 0;
+    white-space: normal;
+  }
+
+  .table-panel td::before {
+    color: var(--ink-red);
+    content: attr(data-label);
+    font-size: 0.72rem;
+    font-weight: 850;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .form-panel .btn {
+    width: 100%;
+  }
+
+  .auth-shell .app-main {
+    min-height: auto;
+    padding-top: 20px;
+    place-items: stretch;
+  }
+
+  .auth-card {
+    max-width: none;
+  }
+
+  .dev-url-badge {
+    align-items: flex-start;
+    display: grid;
+    left: 10px;
+    max-width: calc(100vw - 20px);
+    right: 10px;
+  }
+}
+
 @media (max-width: 560px) {
   .portal-header {
-    padding: 16px;
+    padding: 14px;
   }
 
   .portal-header h1 {
@@ -720,5 +978,44 @@ a:hover {
   .table-panel,
   .empty-state {
     padding: 14px;
+  }
+}
+
+@media (max-width: 420px) {
+  html {
+    font-size: 14px;
+  }
+
+  .app-main {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .portal-header h1 {
+    font-size: 1.48rem;
+  }
+
+  .room-card,
+  .content-card,
+  .moderation-item,
+  .submit-panel,
+  .form-panel,
+  .empty-state {
+    padding: 12px;
+  }
+
+  .empty-state {
+    padding: 22px 12px;
+  }
+
+  .content-image {
+    aspect-ratio: 4 / 3;
+  }
+
+  .btn,
+  .file-link,
+  .form-control,
+  .form-select {
+    min-height: 46px;
   }
 }

@@ -47,11 +47,11 @@ else
                 @foreach (var room in Model)
                 {
                     <tr>
-                        <td>@room.Name</td>
-                        <td>@room.Subject</td>
-                        <td>@room.Section</td>
-                        <td>@room.Description</td>
-                        <td class="room-actions">
+                        <td data-label="Name">@room.Name</td>
+                        <td data-label="Subject">@room.Subject</td>
+                        <td data-label="Section">@room.Section</td>
+                        <td data-label="Description">@room.Description</td>
+                        <td data-label="Actions" class="room-actions">
                             <a class="btn btn-outline-dark btn-sm" asp-controller="Rooms" asp-action="Details" asp-route-id="@room.Id">Open</a>
                             <form asp-controller="Admin" asp-action="DeleteRoom" asp-route-id="@room.Id" method="post" onsubmit="return confirm('Delete this room and all of its submissions and uploaded files?');">
                                 <button class="btn btn-outline-danger btn-sm" type="submit">Delete</button>
