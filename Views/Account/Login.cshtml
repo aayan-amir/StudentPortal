@@ -1,7 +1,7 @@
 @model StudentPortal.Models.ViewModels.LoginInput
 
 @{
-    ViewData["Title"] = "Admin Login";
+    ViewData["Title"] = "Admin";
     ViewData["ShellClass"] = "auth-shell";
 }
 
@@ -9,7 +9,7 @@
     <div class="auth-intro">
         <p class="eyebrow">Admin access</p>
         <h1>Admin sign in</h1>
-        <p>Use the project admin account to review submissions and manage class rooms.</p>
+        <p>Sign in to check uploads and manage rooms.</p>
     </div>
 
     <form asp-controller="Account" asp-action="Login" method="post" class="auth-form">

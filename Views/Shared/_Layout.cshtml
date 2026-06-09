@@ -12,15 +12,14 @@
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/StudentPortal.styles.css" asp-append-version="true" />
 </head>
 <body class="@shellClass">
     <div class="app-shell">
         <aside class="app-rail">
             <div class="app-brand">
                 <a asp-controller="Rooms" asp-action="Index">
-                    <strong>Campus Board</strong>
-                    <small>Student Portal</small>
+                    <strong>Student Portal</strong>
+                    <small>Notes, links, uploads</small>
                 </a>
             </div>
 
@@ -28,9 +27,9 @@
                 <a asp-controller="Rooms" asp-action="Index">Rooms</a>
                 @if (isAdmin)
                 {
-                    <a asp-controller="Admin" asp-action="Pending">Pending Review</a>
-                    <a asp-controller="Admin" asp-action="Approved">Approved</a>
-                    <a asp-controller="Admin" asp-action="Rooms">Room Records</a>
+                    <a asp-controller="Admin" asp-action="Pending">To Review</a>
+                    <a asp-controller="Admin" asp-action="Approved">Shared</a>
+                    <a asp-controller="Admin" asp-action="Rooms">Manage Rooms</a>
                 }
             </nav>
 
@@ -44,7 +43,7 @@
                 }
                 else
                 {
-                    <a class="btn btn-light btn-sm" asp-controller="Account" asp-action="Login">Admin Login</a>
+                    <a class="btn btn-light btn-sm" asp-controller="Account" asp-action="Login">Admin</a>
                 }
             </div>
         </aside>
@@ -53,11 +52,6 @@
             <main class="app-main" role="main">
                 @RenderBody()
             </main>
-
-            <footer class="app-footer">
-                <span>&copy; 2026 Campus Board</span>
-                <span>Rooms, submissions, approvals</span>
-            </footer>
         </div>
     </div>
 
@@ -71,7 +65,6 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

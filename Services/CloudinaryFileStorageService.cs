@@ -34,8 +34,6 @@ public class CloudinaryFileStorageService(
             throw new InvalidOperationException("Only JPG, PNG, WEBP, GIF, and PDF files are allowed.");
         }
 
-        EnsureCloudinarySettings();
-
         await using var stream = file.OpenReadStream();
         using var memoryStream = new MemoryStream();
         await stream.CopyToAsync(memoryStream, cancellationToken);
@@ -94,8 +92,6 @@ public class CloudinaryFileStorageService(
             return;
         }
 
-        EnsureCloudinarySettings();
-
         var timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
         var signedParameters = new SortedDictionary<string, string>
         {
@@ -130,19 +126,6 @@ public class CloudinaryFileStorageService(
         if (result is not ("ok" or "not found"))
         {
             throw new InvalidOperationException($"Cloudinary delete failed: {body}");
-        }
-    }
-
-    private void EnsureCloudinarySettings()
-    {
-        if (string.IsNullOrWhiteSpace(_options.CloudName))
-        {
-            throw new InvalidOperationException("Cloudinary cloud name is missing.");
-        }
-
-        if (string.IsNullOrWhiteSpace(_options.ApiKey) || string.IsNullOrWhiteSpace(_options.ApiSecret))
-        {
-            throw new InvalidOperationException("Cloudinary API key or API secret is missing.");
         }
     }
 

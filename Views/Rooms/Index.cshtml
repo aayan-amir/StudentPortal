@@ -1,14 +1,14 @@
 @model IReadOnlyList<ClassRoom>
 
 @{
-    ViewData["Title"] = "Class Rooms";
+    ViewData["Title"] = "Rooms";
 }
 
 <section class="portal-header">
     <div>
         <p class="eyebrow">Rooms</p>
-        <h1>Class rooms</h1>
-        <p class="page-subtitle">Approved class material is grouped by room. Students can submit notes, images, PDFs, and links for review.</p>
+        <h1>Rooms</h1>
+        <p class="page-subtitle">Find notes, PDFs, images, and links shared for each class.</p>
     </div>
     @if (User.Identity?.IsAuthenticated == true)
     {
@@ -24,8 +24,8 @@
 @if (Model.Count == 0)
 {
     <section class="empty-state">
-        <h2>No class rooms yet</h2>
-        <p>An admin needs to create a room before students can submit material.</p>
+        <h2>No rooms yet</h2>
+        <p>Create a room first, then students can start sending in notes and files.</p>
         <a class="btn btn-primary" asp-controller="Admin" asp-action="CreateRoom">Create first room</a>
     </section>
 }

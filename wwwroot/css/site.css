@@ -156,19 +156,6 @@ a:hover {
   padding: 34px 26px 46px;
 }
 
-.app-footer {
-  align-items: center;
-  border-top: 2px solid var(--border);
-  color: var(--muted);
-  display: flex;
-  font-size: 0.9rem;
-  gap: 16px;
-  justify-content: space-between;
-  margin: 0 auto;
-  max-width: 1180px;
-  padding: 18px 26px 30px;
-}
-
 .portal-header {
   align-items: end;
   background: var(--surface);
@@ -539,14 +526,12 @@ a:hover {
   min-height: 42px;
 }
 
-.btn-primary,
-.btn-dark {
+.btn-primary {
   background: var(--primary);
   border-color: var(--primary);
 }
 
-.btn-primary:hover,
-.btn-dark:hover {
+.btn-primary:hover {
   background: var(--primary-hover);
   border-color: var(--primary-hover);
 }
@@ -732,13 +717,6 @@ a:hover {
     position: static;
   }
 
-  .app-footer {
-    align-items: flex-start;
-    display: grid;
-    gap: 6px;
-    padding-left: 16px;
-    padding-right: 16px;
-  }
 }
 
 @media (max-width: 720px) {

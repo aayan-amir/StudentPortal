@@ -21,15 +21,15 @@
 <div class="portal-layout">
     <section>
         <div class="section-title">
-            <h2>Approved content</h2>
+            <h2>Shared in this room</h2>
             <span>@Model.ApprovedContent.Count items</span>
         </div>
 
         @if (Model.ApprovedContent.Count == 0)
         {
             <div class="empty-state compact">
-                <h3>No approved content yet</h3>
-                <p>Submissions appear here after admin approval.</p>
+                <h3>Nothing shared yet</h3>
+                <p>Approved notes and files will show up here.</p>
             </div>
         }
         else
@@ -100,7 +100,7 @@
     </section>
 
     <aside class="submit-panel">
-        <h2>New submission</h2>
+        <h2>Share something</h2>
         <form asp-controller="Rooms" asp-action="Submit" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="All" class="text-danger mb-3"></div>
             <input asp-for="Submission.ClassRoomId" type="hidden" />
@@ -140,7 +140,7 @@
                 <span asp-validation-for="Submission.UploadedFile" class="text-danger"></span>
             </div>
 
-            <button class="btn btn-primary w-100" type="submit">Submit for review</button>
+            <button class="btn btn-primary w-100" type="submit">Send for review</button>
         </form>
     </aside>
 </div>

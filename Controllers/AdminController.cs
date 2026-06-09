@@ -70,7 +70,7 @@ public class AdminController(
         });
 
         await dbContext.SaveChangesAsync();
-        TempData["SuccessMessage"] = "Class room created.";
+        TempData["SuccessMessage"] = "Room created.";
         return RedirectToAction(nameof(Rooms));
     }
 

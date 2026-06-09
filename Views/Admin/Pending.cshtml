@@ -1,14 +1,14 @@
 @model IReadOnlyList<ContentItem>
 
 @{
-    ViewData["Title"] = "Pending Approval";
+    ViewData["Title"] = "To Review";
 }
 
 <section class="portal-header">
     <div>
         <p class="eyebrow">Admin</p>
-        <h1>Review queue</h1>
-        <p class="page-subtitle">Approve material for room visibility or reject it and remove its uploaded file.</p>
+        <h1>Waiting for review</h1>
+        <p class="page-subtitle">Check new student uploads before they appear in a room.</p>
     </div>
     <a class="btn btn-outline-dark" asp-controller="Admin" asp-action="Rooms">Manage rooms</a>
 </section>
@@ -27,7 +27,7 @@
 {
     <section class="empty-state">
         <h2>No pending submissions</h2>
-        <p>Student submissions waiting for approval will appear here.</p>
+        <p>New uploads will land here first.</p>
     </section>
 }
 else

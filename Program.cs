@@ -12,7 +12,6 @@ if (!HasUsableValue(databaseConnectionString))
     throw new InvalidOperationException("Connection string 'ConnectionStrings:SupabasePostgres' is required.");
 }
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddOptions<AdminAccountOptions>()
     .Bind(builder.Configuration.GetSection(AdminAccountOptions.SectionName))
@@ -53,18 +52,6 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 var app = builder.Build();
 
-app.Lifetime.ApplicationStarted.Register(() =>
-{
-    var addresses = app.Urls.Count > 0
-        ? string.Join(", ", app.Urls)
-        : "http://localhost:5025";
-
-    app.Logger.LogInformation("Student Portal is running at: {Addresses}", addresses);
-    Console.WriteLine();
-    Console.WriteLine($"Student Portal is running at: {addresses}");
-    Console.WriteLine();
-});
-
 if (app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();
@@ -78,11 +65,9 @@ if (app.Environment.IsDevelopment())
     }
 }
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -96,7 +81,7 @@ app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
+    pattern: "{controller=Rooms}/{action=Index}/{id?}")
     .WithStaticAssets();
 
 
@@ -104,6 +89,5 @@ app.Run();
 
 static bool HasUsableValue(string? value)
 {
-    return !string.IsNullOrWhiteSpace(value)
-        && !value.Contains("YOUR-", StringComparison.OrdinalIgnoreCase);
+    return !string.IsNullOrWhiteSpace(value);
 }
