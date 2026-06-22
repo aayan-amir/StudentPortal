@@ -69,7 +69,7 @@ The app validates these settings at startup:
 From repository root:
 
 ```bash
-dotnet user-secrets set "ConnectionStrings:SupabasePostgres" "Host=...;Port=5432;Database=...;Username=...;******;SSL Mode=Require;Trust Server Certificate=true"
+dotnet user-secrets set "ConnectionStrings:SupabasePostgres" "Host=...;Port=5432;Database=...;Username=...;******;SslMode=Require;Trust Server Certificate=true"
 dotnet user-secrets set "AdminAccount:Username" "admin"
 dotnet user-secrets set "AdminAccount:Password" "replace-with-strong-password"
 dotnet user-secrets set "Cloudinary:CloudName" "your-cloud-name"
